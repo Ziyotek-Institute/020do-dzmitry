@@ -1,0 +1,45 @@
+---
+- name: install docker
+  hosts: webserver
+  tasks:
+    - name: packages
+      yum:
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+        state: latest
+
+    - name: configure repo
+      copy:
+        content: https://download.docker.com/linux/centos/docker-ce.repo 
+        dest: /etc/yum.repos.d/docker-ce.repo
+    
+    - name: install docker-ce
+      yum:
+        name:
+          - docker-ce
+        state: latest
+
+    - name: start docker
+      service:
+        name: docker.service
+        enabled: true
+        state: started 
+
+    
+    - name: open firewalld
+      firewalld:
+        service: docker.service
+        permanent: true
+        state: enabled
+        immediate: yes 
+     
+    - name: docker compose
+      copy:
+        content: https://github.com/docker/compose/releases/download/1.25.0/docker-compose 
+        dest: /usr/local/bin/docker-compose
+        
+    
+       
+
