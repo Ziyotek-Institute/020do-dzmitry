@@ -1,0 +1,33 @@
+---
+- name: install docker
+  hosts: all
+  tasks:
+    - name: install epel-release repo
+      yum:
+        name: epel-release
+
+    - name: packages
+      yum:
+        name:
+          - yum-utils
+          - device-mapper-persistent-data
+          - lvm2
+        state: latest
+
+    - name: configure repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo 
+        dest: /etc/yum.repos.d/docker-ce.repo
+        mode: '0700'
+    
+    - name: install docker compose
+      yum:
+        name:
+          - docker-ce
+          - docker-compose
+        state: present
+######################final correct yml########################
+        
+    
+       
+
