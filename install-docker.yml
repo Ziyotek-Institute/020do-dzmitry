@@ -1,7 +1,11 @@
 ---
 - name: install docker
-  hosts: webserver
+  hosts: all
   tasks:
+    - name: install epel-release repo
+      yum:
+        name: epel-release
+
     - name: packages
       yum:
         name:
@@ -11,34 +15,18 @@
         state: latest
 
     - name: configure repo
-      copy:
-        content: https://download.docker.com/linux/centos/docker-ce.repo 
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo 
         dest: /etc/yum.repos.d/docker-ce.repo
+        mode: '0700'
     
-    - name: install docker-ce
+    - name: install docker compose
       yum:
         name:
           - docker-ce
-        state: latest
+          - docker-compose
+        state: present
 
-    - name: start docker
-      service:
-        name: docker.service
-        enabled: true
-        state: started 
-
-    
-    - name: open firewalld
-      firewalld:
-        service: docker.service
-        permanent: true
-        state: enabled
-        immediate: yes 
-     
-    - name: docker compose
-      copy:
-        content: https://github.com/docker/compose/releases/download/1.25.0/docker-compose 
-        dest: /usr/local/bin/docker-compose
         
     
        
